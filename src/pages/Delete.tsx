@@ -59,18 +59,22 @@ const Delete: React.FC<Props> = ({ db, userUuid }) => {
   const [showWarningDialog, setShowWarningDialog] = useState(false);
   const selectedNoteId = useRef<string>("");
 
-  const notesApiCall = () => {
-    (async () => {
-      await new Promise((resolve) => setTimeout(resolve, 1000)); //artistic license
-      const notesFromApi = await getNotes(userUuid, db);
-      setPageLoading(false);
-      setLoading(false);
-      setNotes(notesFromApi);
-    })();
+  let firstApiCallHappened = false;
+
+  const notesApiCall = async () => {
+    await new Promise((resolve) => setTimeout(resolve, 1000)); //artistic license
+    const notesFromApi = await getNotes(userUuid, db);
+    setPageLoading(false);
+    setLoading(false);
+    setNotes(notesFromApi);
+    if (!firstApiCallHappened) selectedNoteId.current = notesFromApi[0].noteId;
   };
 
   useEffect(() => {
-    notesApiCall();
+    (async () => {
+      await notesApiCall();
+      firstApiCallHappened = true;
+    })();
   }, []);
 
   const showDialog = (e: React.MouseEvent) => {
@@ -86,7 +90,7 @@ const Delete: React.FC<Props> = ({ db, userUuid }) => {
     // delete note here
     setLoading(true);
     await deleteNote(selectedNoteId.current, db);
-    notesApiCall();
+    await notesApiCall();
   };
 
   //More code for vertical tabs functionality
@@ -104,6 +108,13 @@ const Delete: React.FC<Props> = ({ db, userUuid }) => {
         flexGrow: 1,
       }}
     >
+      <button
+        onClick={() => {
+          console.log(selectedNoteId.current);
+        }}
+      >
+        click for id
+      </button>
       <Tabs
         className="bg-slate-400 border-r max-w-[200px] min-w-[200px]"
         orientation="vertical"

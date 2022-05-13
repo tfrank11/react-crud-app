@@ -51,8 +51,10 @@ export const deleteNote = async (noteId: string, db: Firestore) => {
   // Delete note from Firestore
   console.log("calling deleteNote");
   try {
-    const res = await deleteDoc(doc(db, "notes", noteId));
-    console.log(res);
+    console.log("noteId: ", noteId);
+    const docRef = doc(db, "notes", noteId);
+    console.log("docRef: ", docRef);
+    await deleteDoc(docRef);
     return;
   } catch (err) {
     console.log(err);
