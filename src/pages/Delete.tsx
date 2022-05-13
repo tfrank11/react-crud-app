@@ -108,13 +108,6 @@ const Delete: React.FC<Props> = ({ db, userUuid }) => {
         flexGrow: 1,
       }}
     >
-      <button
-        onClick={() => {
-          console.log(selectedNoteId.current);
-        }}
-      >
-        click for id
-      </button>
       <Tabs
         className="bg-slate-400 border-r max-w-[200px] min-w-[200px]"
         orientation="vertical"
